@@ -1,57 +1,84 @@
+#include <math.h>
 #include <stdio.h>
-void bellmanFord(int src,int graph[10][10],int n) 
+// Store input bits
+int input[32];
+// Store hamming code
+int code[32];
+int ham_calc(int, int);
+void solve(int input[], int);
+// Function to calculate bit for
+// ith position
+int ham_calc(int position, int c_l)
 {
- int dist[20],sum=0,i; 
- // Initialize distances
- for (int i = 0; i < n; i++)
- dist[i] = 999;
- dist[src] = 0; 
- // Relax all edges V-1 times
- for (int i = 0; i < n - 1; i++) 
- {
- for (int u = 0; u < n; u++)
- {
- for (int v = 0; v < n; v++) 
- {
- if (graph[u][v] && dist[u] != 999 && dist[u] + graph[u][v] < dist[v])
- dist[v] = dist[u] + graph[u][v];
+ int count = 0, i, j;
+ i = position - 1;
+ // Traverse to store Hamming Code
+ while (i < c_l) {
+ for (j = i; j < i + position; j++) {
+ // If current boit is 1
+ if (code[j] == 1)
+ count++;
  }
+ // Update i
+ i = i + 2 * position;
  }
- }
- // Check for negative weight cycles
- for (int u = 0; u < n; u++) 
- {
- for (int v = 0; v < n; v++) 
- {
- if (graph[u][v] && dist[u] != 999 && dist[u] + graph[u][v] < dist[v]) 
- {
- printf("Negative weight cycle found!\n");
- return;
- }
- }
- }
- printf("Vertex Distance from Source\n");
- for (i = 1; i < n; i++)
- printf("Distance from source %d \t to destination\t %d\t is %d\n", src,i, dist[i]); 
+ if (count % 2 == 0)
+ return 0;
+ else
+ return 1;
 }
-void main() 
+// Function to calculate hamming code
+void solve(int input[], int n)
 {
- int n,i,j,source,graph[10][10],src; 
- printf(" BellmanFord Algorithm \n");
- printf("==========================================\n");
- printf("\n Enter the number of vertices");
- scanf("%d",&n);
- printf("Enter the cost matrix 0 for self loop and 99 for no edge \n");
- printf("Enter the n*n matrx\n");
- for(i=0;i<n;i++)
- {
- for(j=0;j<n;j++)
- {
- scanf("%d",&graph[i][j]);
+ int i, p_n = 0, c_l, j, k;
+ i = 0;
+ // Find msg bits having set bit
+ // at x'th position of number
+ while (n > (int)pow(2, i) - (i + 1)) {
+ p_n++;
+ i++;
  }
- 
+ c_l = p_n + n;
+ j = k = 0;
+ // Traverse the msgBits
+ for (i = 0; i < c_l; i++) {
+ // Update the code
+ if (i == ((int)pow(2, k) - 1)) {
+ code[i] = 0;
+ k++;
  }
- printf("Enter the source vertex: ");
- scanf("%d", &src);
- bellmanFord(src,graph,n); 
+ // Update the code[i] to the
+ // input character at index j
+ else {
+ code[i] = input[j];
+ j++;
+ }
+ }
+ // Traverse and update the
+ // hamming code
+ for (i = 0; i < p_n; i++) {
+ // Find current position
+ int position = (int)pow(2, i);
+ // Find value at current position
+ int value = ham_calc(position, c_l);
+ // Update the code
+ code[position - 1] = value;
+ }
+ // Print the Hamming Code
+ printf("\nThe generated Code Word is: ");
+ for (i = 0; i < c_l; i++) {
+ printf("%d", code[i]);
+ }
+}
+// Driver Code
+void main()
+{
+ // Given input message Bit
+ input[0] = 0;
+ input[1] = 1;
+ input[2] = 1;
+ input[3] = 1;
+ int N = 4;
+ // Function Call
+ solve(input, N);
 }
