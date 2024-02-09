@@ -1,57 +1,94 @@
-#include <stdio.h>
-void bellmanFord(int src,int graph[10][10],int n) 
+#include<stdio.h>
+#include<string.h>
+struct frame
 {
- int dist[20],sum=0,i; 
- // Initialize distances
- for (int i = 0; i < n; i++)
- dist[i] = 999;
- dist[src] = 0; 
- // Relax all edges V-1 times
- for (int i = 0; i < n - 1; i++) 
- {
- for (int u = 0; u < n; u++)
- {
- for (int v = 0; v < n; v++) 
- {
- if (graph[u][v] && dist[u] != 999 && dist[u] + graph[u][v] < dist[v])
- dist[v] = dist[u] + graph[u][v];
- }
- }
- }
- // Check for negative weight cycles
- for (int u = 0; u < n; u++) 
- {
- for (int v = 0; v < n; v++) 
- {
- if (graph[u][v] && dist[u] != 999 && dist[u] + graph[u][v] < dist[v]) 
- {
- printf("Negative weight cycle found!\n");
- return;
- }
- }
- }
- printf("Vertex Distance from Source\n");
- for (i = 1; i < n; i++)
- printf("Distance from source %d \t to destination\t %d\t is %d\n", src,i, dist[i]); 
+int seq;
+int len;
+int flag;
+char data[10];
+} n[20],m[20],temp;
+char str[100];
+int count=0;
+void frames()
+{
+int i,j,s,size,total=0;
+s=strlen(str);
+while(total<s)
+{
+size=rand()%10+1;
+n[count].seq=count+1;
+n[count].len=size;
+n[count].flag=0;
+if((total+size) < s)
+{
+for(i=total,j=0;j<size;i++,j++)
+n[count].data[j]=str[i];
+total+=size;
 }
-void main() 
+else
 {
- int n,i,j,source,graph[10][10],src; 
- printf(" BellmanFord Algorithm \n");
- printf("==========================================\n");
- printf("\n Enter the number of vertices");
- scanf("%d",&n);
- printf("Enter the cost matrix 0 for self loop and 99 for no edge \n");
- printf("Enter the n*n matrx\n");
- for(i=0;i<n;i++)
- {
- for(j=0;j<n;j++)
- {
- scanf("%d",&graph[i][j]);
- }
- 
- }
- printf("Enter the source vertex: ");
- scanf("%d", &src);
- bellmanFord(src,graph,n); 
+n[count].len=s-total;
+for(j=0;j<n[count].len;j++)
+n[count].data[j]=str[total++];
+}
+count+=1;
+}
+printf("\n SHOW THE PACKETS:\n\n");
+for(i=0;i<count;i++)
+{
+printf("\t%d:%d\t",n[i].seq,n[i].len);
+for(j=0;j<n[i].len;j++)
+printf("%c",n[i].data[j]);
+printf("\n");
+}
+}
+void trans()
+{
+int i,j;
+int c=0;
+while(c<count)
+{
+i=rand()%count;
+if(n[i].flag==0)
+{
+m[c++]=n[i];
+n[i].flag=1;
+}
+}
+printf("\n\n SHOW THE RANDOM PACKETS:\n\n");
+for(i=0;i<count;i++)
+{
+printf("\t%d:%d\t", m[i].seq, m[i].len);
+for(j=0;j<m[i].len;j++)
+printf("%c", m[i].data[j]);
+printf("\n");
+}
+}
+void sort()
+{
+int i,j;
+for(i=0;i<count;i++)
+for(j=i+1;j<count;j++)
+if(m[i].seq>m[j].seq)
+{
+temp=m[i];
+m[i]=m[j];
+m[j]=temp;
+}
+printf("\n\n SHOW THE SEQUENCED PACKETS:\n\n");
+for(i=0;i<count;i++)
+{
+printf("\t%d:%d\t",m[i].seq,m[i].len);
+for(j=0;j<m[i].len;j++)
+printf("%c",m[i].data[j]);
+printf("\n");
+}
+}
+main()
+{
+printf("Enter the data: ");
+scanf("%s",(str));
+frames();
+trans();
+sort();
 }
