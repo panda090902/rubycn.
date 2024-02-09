@@ -1,125 +1,57 @@
-#include<stdio.h>
-#include<stdlib.h>
-int main()
+#include <stdio.h>
+void bellmanFord(int src,int graph[10][10],int n) 
 {
-int i,j,k=0;
-int flag=1,a[16],g[16],r[20],div[16],n,m;
-printf("\n Enter the degree of generator");
-scanf("%d",&n);
-printf("\n Enter the generator: ");
-for(i=0;i<=n;i++)
-{
- scanf("%d",&g[i]);
+ int dist[20],sum=0,i; 
+ // Initialize distances
+ for (int i = 0; i < n; i++)
+ dist[i] = 999;
+ dist[src] = 0; 
+ // Relax all edges V-1 times
+ for (int i = 0; i < n - 1; i++) 
+ {
+ for (int u = 0; u < n; u++)
+ {
+ for (int v = 0; v < n; v++) 
+ {
+ if (graph[u][v] && dist[u] != 999 && dist[u] + graph[u][v] < dist[v])
+ dist[v] = dist[u] + graph[u][v];
+ }
+ }
+ }
+ // Check for negative weight cycles
+ for (int u = 0; u < n; u++) 
+ {
+ for (int v = 0; v < n; v++) 
+ {
+ if (graph[u][v] && dist[u] != 999 && dist[u] + graph[u][v] < dist[v]) 
+ {
+ printf("Negative weight cycle found!\n");
+ return;
+ }
+ }
+ }
+ printf("Vertex Distance from Source\n");
+ for (i = 1; i < n; i++)
+ printf("Distance from source %d \t to destination\t %d\t is %d\n", src,i, dist[i]); 
 }
-printf("\n Enter the degree of frame: ");
-scanf("%d",&m);
-printf("\n Enter the frame: ");
-for(i=0;i<=m;i++)
+void main() 
 {
- scanf("%d",&a[i]);
-}
-if(m<n || (g[0]&&g[n])==0)
-{
-printf("not a proper generator\n");
-exit(0);
-}
-for(i=m+1;i<=m+n;i++)
-{
- a[i]=0;
-}
-for(j=0;j<=n;j++)
-{
- r[j]=a[j];
-}
-for(i=n;i<=m+n;i++)
-{
-if(i>n)
-{
-for(j=0;j<n;j++)
-{
- r[j]=r[j+1];
-}
-r[j]=a[i];
-}
-if(r[0])
-div[k++]=1;
-else
-{
-div[k++]=0;
-continue;
-}
-for(j=0;j<=n;j++)
-r[j]=r[j]^g[j];
-}
-printf("\n Quotient is : ");
-for(j=0;j<k;j++)
-{
- printf("%d",div[j]);
-}
-printf("\n Remainder is: ");
-for(i=1;i<=n;i++)
-{
- printf("%d",r[i]);
-} 
-printf("\n Transmitted frame is: ");
-for(i=m+1, j=1;i<=m+n;i++,j++)
-{
- a[i]=r[j];
-}
-for(i=0;i<=m+n;i++)
-{
- printf("%d",a[i]);
-}
-printf("\n");
-printf("\n Enter the degree of frame: ");
-scanf("%d",&m);
-printf("\n Enter the frame: ");
-for(i=0;i<=m;i++)
-{
- scanf("%d",&a[i]);
-}
-for(j=0;j<=n;j++)
-{
- r[j]=a[j];
-}
-k=0;
-for(i=n;i<=m;i++)
-{
-if(i>n)
-{
-for(j=0;j<n;j++)
-{
-r[j]=r[j+1];
-}
-r[j]=a[i];
-}
-if(r[0])
-div[k++]=1;
-else
-{
-div[k++]=0;
-continue;
-}
-for(j=0;j<=n;j++)
-r[j]=r[j]^g[j];
-}
-printf("\n Quotient is : ");
-for(j=0;j<k;j++)
-{
- printf("%d",div[j]); 
-}
-printf("\nreminder is\n");
-for(i=1;i<=n;i++)
-{
- printf("%d",r[i]);
-}
-for(i=1;i<=n;i++)
-{
-if (r[i])
-flag=0;
-}
-if(flag)
-printf("\n no error\n");
-else
-printf("\n error\n");
+ int n,i,j,source,graph[10][10],src; 
+ printf(" BellmanFord Algorithm \n");
+ printf("==========================================\n");
+ printf("\n Enter the number of vertices");
+ scanf("%d",&n);
+ printf("Enter the cost matrix 0 for self loop and 99 for no edge \n");
+ printf("Enter the n*n matrx\n");
+ for(i=0;i<n;i++)
+ {
+ for(j=0;j<n;j++)
+ {
+ scanf("%d",&graph[i][j]);
+ }
+ 
+ }
+ printf("Enter the source vertex: ");
+ scanf("%d", &src);
+ bellmanFord(src,graph,n); 
 }
