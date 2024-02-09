@@ -1,57 +1,37 @@
-#include <stdio.h>
-void bellmanFord(int src,int graph[10][10],int n) 
+#include<stdio.h>
+#include<stdlib.h>
+int d[10][10],via[10][10];
+int main()
 {
- int dist[20],sum=0,i; 
- // Initialize distances
- for (int i = 0; i < n; i++)
- dist[i] = 999;
- dist[src] = 0; 
- // Relax all edges V-1 times
- for (int i = 0; i < n - 1; i++) 
- {
- for (int u = 0; u < n; u++)
- {
- for (int v = 0; v < n; v++) 
- {
- if (graph[u][v] && dist[u] != 999 && dist[u] + graph[u][v] < dist[v])
- dist[v] = dist[u] + graph[u][v];
- }
- }
- }
- // Check for negative weight cycles
- for (int u = 0; u < n; u++) 
- {
- for (int v = 0; v < n; v++) 
- {
- if (graph[u][v] && dist[u] != 999 && dist[u] + graph[u][v] < dist[v]) 
- {
- printf("Negative weight cycle found!\n");
- return;
- }
- }
- }
- printf("Vertex Distance from Source\n");
- for (i = 1; i < n; i++)
- printf("Distance from source %d \t to destination\t %d\t is %d\n", src,i, dist[i]); 
+int i,c,j,k,n,m,cost,g[10][10],ch,count;
+printf("\n enter the number of nodes:");
+scanf("%d",&n);
+for(i=0;i<n;i++)
+{
+printf("\n enter the record for router %c:\n",i+97);
+for(j=0;j<n;j++)
+{
+printf("(%c:%c)::",i+97,j+97);
+scanf("%d",&g[i][j]);
 }
-void main() 
-{
- int n,i,j,source,graph[10][10],src; 
- printf(" BellmanFord Algorithm \n");
- printf("==========================================\n");
- printf("\n Enter the number of vertices");
- scanf("%d",&n);
- printf("Enter the cost matrix 0 for self loop and 99 for no edge \n");
- printf("Enter the n*n matrx\n");
+}
+ do
+ { 
+ count=0;
  for(i=0;i<n;i++)
- {
  for(j=0;j<n;j++)
+ for(k=0;k<n;k++)
+ if(g[i][j]+g[j][k]<g[i][k])
  {
- scanf("%d",&graph[i][j]);
+ g[i][k]=g[i][j]+g[j][k];
+ count++;
  }
  
+ }while(count!=0);
+ for(i=0;i<n;i++)
+ {
+ printf("cost table of router %c:\n",i+97);
+ for(j=0;j<n;j++)
+ printf("%c:%d via %c \n",j+97,g[i][j],via[i][j]+97);
  }
- printf("Enter the source vertex: ");
- scanf("%d", &src);
- bellmanFord(src,graph,n); 
 }
