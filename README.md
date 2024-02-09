@@ -1,57 +1,43 @@
-#include <stdio.h>
-void bellmanFord(int src,int graph[10][10],int n) 
+#include<stdio.h>
+#include<string.h>
+int main()
 {
- int dist[20],sum=0,i; 
- // Initialize distances
- for (int i = 0; i < n; i++)
- dist[i] = 999;
- dist[src] = 0; 
- // Relax all edges V-1 times
- for (int i = 0; i < n - 1; i++) 
- {
- for (int u = 0; u < n; u++)
- {
- for (int v = 0; v < n; v++) 
- {
- if (graph[u][v] && dist[u] != 999 && dist[u] + graph[u][v] < dist[v])
- dist[v] = dist[u] + graph[u][v];
- }
- }
- }
- // Check for negative weight cycles
- for (int u = 0; u < n; u++) 
- {
- for (int v = 0; v < n; v++) 
- {
- if (graph[u][v] && dist[u] != 999 && dist[u] + graph[u][v] < dist[v]) 
- {
- printf("Negative weight cycle found!\n");
- return;
- }
- }
- }
- printf("Vertex Distance from Source\n");
- for (i = 1; i < n; i++)
- printf("Distance from source %d \t to destination\t %d\t is %d\n", src,i, dist[i]); 
-}
-void main() 
-{
- int n,i,j,source,graph[10][10],src; 
- printf(" BellmanFord Algorithm \n");
- printf("==========================================\n");
- printf("\n Enter the number of vertices");
+ int a[20],b[30],i,j,k,count,n;
+ printf("Enter frame size:");
  scanf("%d",&n);
- printf("Enter the cost matrix 0 for self loop and 99 for no edge \n");
- printf("Enter the n*n matrx\n");
- for(i=0;i<n;i++)
+ printf("Enter the frame in the form of 0 and 1 :");
+ for(i=0; i<n; i++)
+ scanf("%d",&a[i]);
+ i=0;
+ count=1;
+ j=0;
+ while(i<n)
  {
- for(j=0;j<n;j++)
+ if(a[i]==1)
  {
- scanf("%d",&graph[i][j]);
+ b[j]=a[i];
+ for(k=i+1; a[k]==1 && k<n && count<5; k++)
+ {
+ j++;
+ b[j]=a[k];
+ count++;
+ if(count==5)
+ {
+ j++;
+ b[j]=0;
  }
- 
+ i=k;
  }
- printf("Enter the source vertex: ");
- scanf("%d", &src);
- bellmanFord(src,graph,n); 
+ }
+ else
+ {
+ b[j]=a[i];
+ }
+ i++;
+ j++;
+ }
+ printf("After Bit Stuffing :");
+ for(i=0; i<j; i++)
+ printf("%d",b[i]);
+ return 0;
 }
